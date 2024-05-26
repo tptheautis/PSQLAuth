@@ -1,6 +1,7 @@
 import express from 'express';
 const app = express();
 import pool from './dbConfig.js';
+import bcrypt from 'bcrypt';
 
 const PORT = process.env.PORT || 4000;
 
@@ -23,7 +24,7 @@ app.get("/users/dashboard", (req, res) => {
     res.render("dashboard", { user: "Conor"});
 });
 
-app.post('/users/register', (req, res) => {
+app.post('/users/register', async (req, res) => {
     let { name, email, password, password2 } = req.body;
 
     console.log({
@@ -49,6 +50,11 @@ app.post('/users/register', (req, res) => {
 
     if (errors.length > 0) {
         res.render("register", { errors });
+    } else {
+        //form validation has passed
+
+        let hashedPassword = await bcrypt.hash(password, 10);
+        console.log(hashedPassword);
     }
 });
 
